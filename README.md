@@ -24,10 +24,11 @@ Just another CLI app to store todos and show timetable. Data are stored in SQLit
 
 ## Usage
 
-1. add subjects
-2. add teachers
-3. add classes
-4. create timetable with relation data
+1. add subjects: `fri add-subject "pravdepodobnosť a štatistika" "PaŠ"` ...
+2. add teachers: `fri add-teacher Ida Stankovianska` ...
+3. add classes: `fri add-class "AR1A3"` ...
+4. create timetable with relation data: `fri add-timetable pravde AR1A3 stanko P thu 8 2` ...
+   > Note that during timetable creating you can use just some part of word, not whole word. But it has to be unique across all subjects/teachers. Classes you have to write exact.
 
 ## ToDo
 
