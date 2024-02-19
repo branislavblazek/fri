@@ -1,9 +1,14 @@
-const { getClassRepository } = require('../../repository/classRepository')
-const { findSubjectRepository } = require('../../repository/subjectRepository')
-const { getTeacherRepository } = require('../../repository/teacherRepository')
 const {
   addTimetableBlockRepository,
 } = require('../../repository/timetableRepository')
+const {
+  getSubjectByName,
+  getClassByName,
+  getTeacherByName,
+  getTimetableBlockType,
+  getDayByShortcut,
+  getNumber,
+} = require('../../validationUtils')
 
 const addTimetableBlock = async ({
   subject_name,
@@ -27,62 +32,35 @@ const addTimetableBlock = async ({
     return
   }
 
-  const subjectData = await findSubjectRepository({ subject_name })
-  if (!subjectData.length) {
-    console.log('📚❌ Subject not found.')
-    return
-  }
-  if (subjectData.length > 1) {
-    console.log('📚❌ More than one subject found.')
-    return
-  }
+  const relevantSubject = await getSubjectByName(subject_name)
+  if (!relevantSubject) return
 
-  const classData = await getClassRepository({ name: class_name })
-  if (!classData.length) {
-    console.log('🏫❌ Class not found.')
-    return
-  }
-  if (classData.length > 1) {
-    console.log('🏫❌ More than one class found.')
-    return
-  }
+  const relevantClass = await getClassByName(class_name)
+  if (!relevantClass) return
 
-  const teacherData = await getTeacherRepository({ name: teacher_name })
-  if (!teacherData.length) {
-    console.log('👨‍🏫❌ Teacher not found.')
-    return
-  }
-  if (teacherData.length > 1) {
-    console.log('👨‍🏫❌ More than one teacher found.')
-    return
-  }
+  const relevantTeacher = await getTeacherByName(teacher_name)
+  if (!relevantTeacher) return
 
-  const TYPES = ['P', 'L']
-  if (!TYPES.includes(type.toUpperCase())) {
-    console.log('📅❌ Type must be P or L.')
-    return
-  }
+  const relevantType = getTimetableBlockType(type)
+  if (!relevantType) return
 
-  const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri']
-  if (!DAYS.includes(day.toLowerCase())) {
-    console.log('📅❌ Day must be mon, tue, wed, thu or fri.')
-    return
-  }
+  const relevantDay = getDayByShortcut(day)
+  if (!relevantDay) return
 
-  const durationInt = parseInt(duration)
-  if (isNaN(durationInt) || durationInt < 1) {
-    console.log('📅❌ Duration must be a number.')
-    return
-  }
+  const relevantHour = getNumber(hour)
+  if (!relevantHour) return
+
+  const relevantDuration = getNumber(duration)
+  if (!relevantDuration) return
 
   await addTimetableBlockRepository({
-    subject_id: subjectData[0].id,
-    class_id: classData[0].id,
-    teacher_id: teacherData[0].id,
-    type_string: type.toUpperCase(),
-    day: DAYS.indexOf(day.toLowerCase()),
-    hour: parseInt(hour),
-    duration: durationInt,
+    subject_id: relevantSubject.id,
+    class_id: relevantClass.id,
+    teacher_id: relevantTeacher.id,
+    type_string: relevantType,
+    day: relevantDay,
+    hour: relevantHour,
+    duration: relevantDuration,
   })
   console.log('📅✅ Timetable added.')
 }

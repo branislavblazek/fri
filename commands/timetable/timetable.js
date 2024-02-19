@@ -4,7 +4,6 @@ const {
 } = require('../../repository/timetableRepository')
 
 const timetable = async ({ id }) => {
-  const showIds = id === 'true'
   const timetableData = await getTimetableRepository()
   const weekData = timetableData.reduce(
     (acc, curr) => {
@@ -16,7 +15,7 @@ const timetable = async ({ id }) => {
 
   const formatCell = (cell) => ({
     colSpan: cell.duration,
-    content: `${showIds ? `#${cell.id} ` : ''}${cell.subject_shortcut} ${
+    content: `${id ? `#${cell.id} ` : ''}${cell.subject_shortcut} ${
       cell.class
     } ${cell.type}\n${cell.teacher_last_name} ${cell.teacher_first_name}`,
   })
@@ -27,7 +26,7 @@ const timetable = async ({ id }) => {
     }))
 
   const weekDataWithSpace = weekData.map((day) => {
-    let actualTime = 8
+    let actualTime = 7
     const dayWithSpaces = day.reduce((acc, curr) => {
       if (curr.hour === actualTime) {
         actualTime += curr.duration
@@ -52,6 +51,7 @@ const timetable = async ({ id }) => {
   let table = new Table({
     head: [
       '5ZYI21',
+      '07:00',
       '08:00',
       '09:00',
       '10:00',
@@ -65,7 +65,7 @@ const timetable = async ({ id }) => {
       '18:00',
       '19:00',
     ],
-    colWidths: [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+    colWidths: [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
     style: {
       head: ['blue'],
       border: ['green'],

@@ -20,6 +20,9 @@ const {
 const {
   removeTimetableBlock,
 } = require('./commands/timetable/remove-timetable-block')
+const {
+  editTimetableBlock,
+} = require('./commands/timetable/edit-timetable-block')
 
 async function main() {
   await yargs(process.argv.slice(2))
@@ -95,12 +98,55 @@ async function main() {
       removeTimetableBlock
     )
     .command(
+      'edit-timetable-block <id>',
+      'Edit timetable block.',
+      (yargs) => {
+        yargs.positional('id', { type: 'number' })
+        yargs.option('subject_name', {
+          alias: 's',
+          describe: 'edit subject name',
+          type: 'string',
+        })
+        yargs.option('class_name', {
+          alias: 'c',
+          describe: 'edit class name',
+          type: 'string',
+        })
+        yargs.option('teacher_name', {
+          alias: 't',
+          describe: 'edit teacher name',
+          type: 'string',
+        })
+        yargs.option('type_string', {
+          alias: 'y',
+          describe: 'edit type',
+          type: 'string',
+        })
+        yargs.option('day', {
+          alias: 'd',
+          describe: 'edit day',
+          type: 'string',
+        })
+        yargs.option('hour', {
+          alias: 'o',
+          describe: 'edit hour',
+          type: 'number',
+        })
+        yargs.option('duration', {
+          alias: 'u',
+          describe: 'edit duration',
+          type: 'number',
+        })
+      },
+      editTimetableBlock
+    )
+    .command(
       'timetable',
       'Show timetable.',
       (yargs) => {
         yargs.option('id', {
           describe: 'edit subject name',
-          type: 'string',
+          type: 'boolean',
         })
       },
       timetable
