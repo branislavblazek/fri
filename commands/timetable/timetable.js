@@ -1,11 +1,13 @@
 var Table = require('cli-table3')
-const { getTimetable } = require('../db')
+const {
+  getTimetableRepository,
+} = require('../../repository/timetableRepository')
 
-const timetable = async () => {
-  const timetableData = await getTimetable()
+const timetable = async ({ id }) => {
+  const showIds = id === 'true'
+  const timetableData = await getTimetableRepository()
   const weekData = timetableData.reduce(
     (acc, curr) => {
-      // const data =
       acc[curr.day].push(curr)
       return acc
     },
@@ -14,7 +16,9 @@ const timetable = async () => {
 
   const formatCell = (cell) => ({
     colSpan: cell.duration,
-    content: `${cell.subject_shortcut} ${cell.class} ${cell.type}\n${cell.teacher_last_name} ${cell.teacher_first_name}`,
+    content: `${showIds ? `#${cell.id} ` : ''}${cell.subject_shortcut} ${
+      cell.class
+    } ${cell.type}\n${cell.teacher_last_name} ${cell.teacher_first_name}`,
   })
 
   const createEmptyCells = (count) =>
